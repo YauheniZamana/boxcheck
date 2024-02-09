@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_shipment_shipment_data",
+  "info": {
+    "displayName": "ShipmentData"
+  },
+  "options": {},
+  "attributes": {
+    "shipmentLabel": {
+      "type": "string"
+    }
+  }
+}

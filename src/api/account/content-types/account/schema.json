@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "accounts",
+  "info": {
+    "singularName": "account",
+    "pluralName": "accounts",
+    "displayName": "Account",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Name": {
+      "type": "string"
+    },
+    "ShopifyConnect": {
+      "type": "component",
+      "repeatable": false,
+      "component": "account.shopify-connect"
+    },
+    "AddressInfo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.adress-info"
+    }
+  }
+}

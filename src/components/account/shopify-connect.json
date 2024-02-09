@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_account_shopify_connects",
+  "info": {
+    "displayName": "ShopifyConnect",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "ShopifyUrl": {
+      "type": "text",
+      "required": true
+    },
+    "ShopifyAccessToken": {
+      "type": "text",
+      "required": true
+    },
+    "ShopNamePrefix": {
+      "type": "string",
+      "required": true
+    },
+    "ConnectToShopify": {
+      "type": "boolean"
+    },
+    "FulfillmentServiceId": {
+      "type": "biginteger"
+    },
+    "FulfillmentServiceName": {
+      "type": "text"
+    },
+    "FulfillmentServiceLocationId": {
+      "type": "biginteger"
+    }
+  }
+}

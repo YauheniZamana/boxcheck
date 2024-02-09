@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shipments",
+  "info": {
+    "singularName": "shipment",
+    "pluralName": "shipments",
+    "displayName": "Shipment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "order_number": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "ShipmentData": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shipment.shipment-data"
+    }
+  }
+}

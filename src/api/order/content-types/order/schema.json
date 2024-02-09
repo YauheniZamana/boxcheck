@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "order_id": {
+      "type": "biginteger"
+    },
+    "account": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::account.account"
+    },
+    "ShippingAddress": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.adress-info"
+    },
+    "Product": {
+      "type": "component",
+      "repeatable": true,
+      "component": "order.order-product"
+    },
+    "order_number": {
+      "type": "string"
+    },
+    "order_fulfillment_id": {
+      "type": "biginteger"
+    }
+  }
+}
