@@ -1,8 +1,8 @@
 import {Order} from "../../../types/order";
 import {validateObjectFieldsOnValue} from "../shared";
 
-export interface OrderValidationResult {
-  orderId: string,
+export interface OrderFieldsValidationResult {
+  orderId: number,
   message: string
 }
 
@@ -31,18 +31,18 @@ const validateOrderForShopify = (order: Order): string | null => {
     : null
 }
 
-export const getOrdersValidationForShopify = (orders: Order[]): OrderValidationResult[] | null => {
-  const validationResult: OrderValidationResult[] = []
+export const getOrdersValidationForShopify = (orders: Order[]): OrderFieldsValidationResult[] => {
+  const validationResult: OrderFieldsValidationResult[] = []
 
   orders.forEach(order => {
     const orderValidationResult = validateOrderForShopify(order)
 
     if (orderValidationResult) {
-      validationResult.push({orderId: order.order_id, message: orderValidationResult})
+      validationResult.push({orderId: order.id, message: orderValidationResult})
     }
   })
 
-  return validationResult.length ? validationResult : null
+  return validationResult
 }
 
 

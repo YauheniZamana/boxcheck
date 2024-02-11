@@ -35,6 +35,14 @@
     },
     "order_fulfillment_id": {
       "type": "biginteger"
+    },
+    "shipping_status": {
+      "type": "enumeration",
+      "enum": [
+        "Pending",
+        "Declined",
+        "Created"
+      ]
     }
   }
 }

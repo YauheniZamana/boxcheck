@@ -3,10 +3,11 @@ import {Account} from "../../../../types/account";
 import {ShopifyApiAccessOptions} from "../shopifyApi/types";
 import {getFulfillmentRequestedOrders} from "../shopify";
 import {
-  getShopifyOrdersFromIdList, mapShopifyOrdersToEntity, createOrdersFromList
+  getShopifyOrdersFromIdList, mapShopifyOrdersToEntity, createOrUpdateOrders
 } from "../../../utils/order/orders-sync";
 import {findOrdersFromListByOrderId} from "../../../db/db-order";
 import { Strapi } from "@strapi/types";
+import {OrderMapToEntityData} from "../../../utils/order/orders-sync";
 
 const { ValidationError } = errors
 
@@ -28,28 +29,38 @@ export async function syncShopifyOrders(
 
     const existingOrders = await findOrdersFromListByOrderId(strapi, fulfillmentRequestedOrdersId)
 
+    const declinedExistingOrders = existingOrders.filter(order => order.shipping_status === "Declined")
+
     const newFulfillmentRequestedOrders = fulfillmentRequestedOrders.filter(order => !existingOrders.find(existingOrder => order.order_id === +existingOrder.order_id))
 
-    if (!newFulfillmentRequestedOrders.length) {
+    if (!newFulfillmentRequestedOrders.length && !declinedExistingOrders.length) {
       throw new ValidationError(`No assigned orders`)
     }
 
-    const newFulfillmentRequestedOrdersId = newFulfillmentRequestedOrders.map(order => order.order_id)
+    const ordersToUpdateOrCreateData: OrderMapToEntityData = {}
 
-    /*const newFulfillmentRequestedOrdersData = newFulfillmentRequestedOrders.map(order => {
-    return {
-      id: order.order_id,
-      fulfilment_id: order.id
+    for (const order of newFulfillmentRequestedOrders) {
+      ordersToUpdateOrCreateData[order.order_id] = {
+        fulfilmentOrderId: order.id,
+        action: 'create'
+      }
     }
-     })*/
 
-    const newShopifyOrders = await getShopifyOrdersFromIdList(newFulfillmentRequestedOrdersId, shopifyApiAccessOptions)
+    for (const order of declinedExistingOrders) {
+      ordersToUpdateOrCreateData[order.order_id] = {
+        id: order.id,
+        fulfilmentOrderId: order.order_fulfillment_id,
+        action: 'update',
+      }
+    }
 
-    const ordersEntity = mapShopifyOrdersToEntity(newShopifyOrders, account, shopNamePrefix)
+    const newShopifyOrders = await getShopifyOrdersFromIdList(Object.keys(ordersToUpdateOrCreateData), shopifyApiAccessOptions)
 
-    const newOrders = await createOrdersFromList(strapi, ordersEntity)
+    const ordersEntityData = mapShopifyOrdersToEntity(newShopifyOrders, ordersToUpdateOrCreateData, account, shopNamePrefix)
 
-    return newOrders.map(order => order.id)
+    const createdOrUpdatedOrders = await createOrUpdateOrders(strapi, ordersEntityData)
+
+    return createdOrUpdatedOrders.length
   } catch (e) {
     console.log(e)
   }

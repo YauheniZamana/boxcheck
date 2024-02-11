@@ -836,6 +836,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     Product: Attribute.Component<'order.order-product', true>;
     order_number: Attribute.String;
     order_fulfillment_id: Attribute.BigInteger;
+    shipping_status: Attribute.Enumeration<['Pending', 'Declined', 'Created']>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -859,7 +860,7 @@ export interface ApiShipmentShipment extends Schema.CollectionType {
   info: {
     singularName: 'shipment';
     pluralName: 'shipments';
-    displayName: 'Shipment';
+    displayName: 'Shipping';
     description: '';
   };
   options: {

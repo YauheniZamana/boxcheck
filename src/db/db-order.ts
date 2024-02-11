@@ -1,4 +1,4 @@
-import {Order} from "../../types/order";
+import {Order, OrderShippingStatus} from "../../types/order";
 import {ORDER_UID} from "../const/strapi-uid";
 
 export async function findOrdersFromListByOrderId(
@@ -10,22 +10,20 @@ export async function findOrdersFromListByOrderId(
     where: {
       order_id: {
         $in: orderIdsList
-      }
+      },
     }
   })
 }
 
-export async function findOrdersFromListById(
+export async function findOrdersFromListByShippingStatus(
   //@ts-ignore
   strapi: Strapi.Strapi,
-  idsList: number[],
+  status: OrderShippingStatus
 ) : Promise<Order[]> {
   return strapi.entityService.findMany(ORDER_UID, {
     populate: ['Product', 'ShippingAddress'],
     where: {
-      id: {
-        $in: idsList
-      }
+      shipping_status: status
     }
   })
 }
@@ -35,11 +33,18 @@ export async function createOrder(
   strapi: Strapi.Strapi,
   data: Omit<Order, 'id'>,
 ) : Promise<Order> {
-  console.log("CREATE")
-
   return strapi.entityService.create(ORDER_UID, {
     data
-  }).catch(e => {
-    console.log("ERROR", e)
+  })
+}
+
+export async function updateOrder(
+  //@ts-ignore
+  strapi: Strapi.Strapi,
+  id: number,
+  data: Omit<Order, 'id'>,
+) : Promise<Order> {
+  return strapi.entityService.update(ORDER_UID, id, {
+    data
   })
 }

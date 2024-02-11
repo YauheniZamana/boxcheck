@@ -23,7 +23,7 @@ export default ({ strapi }: { strapi: Strapi }) => ({
         const syncShopifyOrdersResult = await syncShopifyOrders(strapi, account, shopNamePrefix, shopifyApiAccessOptions)
 
         if (syncShopifyOrdersResult) {
-          const result = await manageShipments(strapi, syncShopifyOrdersResult)
+          const result = await manageShipments(strapi)
           console.log("RESULT" ,result)
         }
       }

@@ -2,23 +2,29 @@ import { errors } from '@strapi/utils'
 import {getAuthToken} from "../boxcheck";
 import {BoxcheckApiAccessOptions} from "../boxcheckApi/types";
 import {Strapi} from "@strapi/types";
-import {findOrdersFromListById} from "../../../db/db-order";
+import {findOrdersFromListByShippingStatus} from "../../../db/db-order";
 import {getOrdersValidationForShopify} from "../../../utils/order/order-validation";
 
 const { ValidationError } = errors
 const BOXCHECK_API_URL = process.env.BOXCHECK_API_URL
 const BOXCHECK_USER = process.env.BOXCHECK_USER
 const BOXCHECK_PASSWORD = process.env.BOXCHECK_PASSWORD
-export async function manageShipments(strapi: Strapi, ordersIds: number[]) {
-  const orders = await findOrdersFromListById(strapi, ordersIds)
+export async function manageShipments(strapi: Strapi) {
+  const orders = await findOrdersFromListByShippingStatus(strapi, 'Pending')
 
   if (!orders.length) {
     throw new ValidationError(`No orders for shipment`)
   }
 
-  const orderValidation = getOrdersValidationForShopify(orders)
+  const ordersFieldsValidation = getOrdersValidationForShopify(orders)
 
-  console.log("VALIDATION", orderValidation)
+  const validOrders = orders.filter(order => !ordersFieldsValidation.find(validation => order.id === validation.orderId))
+
+
+
+  console.log("VALID ORDERS", validOrders)
+
+  console.log("VALIDATION", ordersFieldsValidation)
 
   const apiAccessOptions: BoxcheckApiAccessOptions = {
     baseUrl: BOXCHECK_API_URL

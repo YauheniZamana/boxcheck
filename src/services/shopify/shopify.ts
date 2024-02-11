@@ -87,6 +87,16 @@ export async function getOrderById(
   return response.data?.order
 }
 
-/*export async function rejectOrderFulfilment(
+export async function rejectOrderFulfilment(
   options: ShopifyApiAccessOptions,
-)*/
+  id: string
+): Promise<object> {
+  const response = await shopifyApi<Record<'order', ShopifyOrder>>('post', {
+    targetURL: `fulfillment_orders/${id}/fulfillment_request/reject.json`,
+    ...options,
+  }).catch((error) => {
+    throw new ApplicationError(error.message, 'Error while rejectOrderFulfilment call')
+  })
+
+  return response
+}
